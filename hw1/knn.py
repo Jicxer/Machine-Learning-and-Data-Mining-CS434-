@@ -164,7 +164,6 @@ def get_nearest_neighbors(example_set, query, k):
 def knn_classify_point(examples_X, examples_y, query, k):
     nearest_neighbors = get_nearest_neighbors(examples_X, query, k)
     nearest_labels = examples_y[nearest_neighbors].ravel()  # Flatten numpy array
-    print("Nearest labels:", nearest_labels)
     label_counts = {}
     
     for label in nearest_labels:
@@ -174,7 +173,6 @@ def knn_classify_point(examples_X, examples_y, query, k):
             label_counts[label] = 1
     
     predicted_label = max(label_counts, key=label_counts.get)
-    print("Predicted label:", predicted_label)
     return predicted_label
 
 
@@ -196,8 +194,33 @@ def knn_classify_point(examples_X, examples_y, query, k):
 ######################################################################
 
 def cross_validation(train_X, train_y, num_folds=4, k=1):
-    #TODO
-    return avg_val_acc, varr_val_acc
+    train_X_folds = np.split(train_X, num_folds)
+    train_y_folds = np.split(train_y, num_folds)
+    
+    accuracy = []
+    
+    for i in range(num_folds):
+        print("Folds:", train_X_folds[i])
+        test_point_x = train_X_folds[i]
+        test_point_y = train_y_folds[i]
+        
+        train_fold_X = np.vstack([fold for j, fold in enumerate(fold_X) if j != i])
+        train_fold_y = np.hstack([fold for j, fold in enumerate(fold_y) if j != i])
+    
+    correct_predictions = 0
+    for query_point, true_label in zip(test_X, test_y):
+        predicted_label = knn_predict(train_fold_X, train_fold_y, query_point, k)
+        if predicted_label == true_label:
+            correct_predictions += 1
+        
+        # Step 4: Calculate accuracy for the current fold
+    accuracy = correct_predictions / len(test_y)
+    accuracies.append(accuracy)
+    
+    # Step 5: Calculate the average and variance of the accuracies
+    avg_accuracy = np.mean(accuracies)
+    var_accuracy = np.var(accuracies)
+    return 0
 
 
 
