@@ -164,7 +164,7 @@ def get_nearest_neighbors(example_set, query, k):
 ######################################################################
 
 def knn_classify_point(examples_X, examples_y, query, k):
-    
+    test_idx = get_nearest_neighbors(examples_X, query, k)
     return predicted_label
 
 
