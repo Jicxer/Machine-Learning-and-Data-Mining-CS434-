@@ -1,4 +1,5 @@
 import numpy as np
+import statistics as st
 import time
 
 def main():
@@ -132,14 +133,11 @@ def main():
 ######################################################################
 
 def get_nearest_neighbors(example_set, query, k):
-    print(example_set)
     stored_distances = []
     for point in example_set:
         distance = np.linalg.norm(query - point)
         stored_distances.append(distance)
     idx_of_nearest = np.argsort(stored_distances)[:k]
-    print(stored_distances)
-    
     return idx_of_nearest  
 
 
@@ -164,9 +162,20 @@ def get_nearest_neighbors(example_set, query, k):
 ######################################################################
 
 def knn_classify_point(examples_X, examples_y, query, k):
-    test_idx = get_nearest_neighbors(examples_X, query, k)
+    nearest_neighbors = get_nearest_neighbors(examples_X, query, k)
+    nearest_labels = examples_y[nearest_neighbors].ravel()  # Flatten numpy array
+    print("Nearest labels:", nearest_labels)
+    label_counts = {}
+    
+    for label in nearest_labels:
+        if label in label_counts:
+            label_counts[label] += 1
+        else:
+            label_counts[label] = 1
+    
+    predicted_label = max(label_counts, key=label_counts.get)
+    print("Predicted label:", predicted_label)
     return predicted_label
-
 
 
 
