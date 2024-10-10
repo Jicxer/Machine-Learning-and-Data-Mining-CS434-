@@ -137,6 +137,7 @@ def get_nearest_neighbors(example_set, query, k):
     for point in example_set:
         distance = np.linalg.norm(query - point)
         stored_distances.append(distance)
+    idx_of_nearest = np.argsort(stored_distances)[:k]
     print(stored_distances)
     
     return idx_of_nearest  
@@ -163,7 +164,7 @@ def get_nearest_neighbors(example_set, query, k):
 ######################################################################
 
 def knn_classify_point(examples_X, examples_y, query, k):
-    #TODO
+    
     return predicted_label
 
 
