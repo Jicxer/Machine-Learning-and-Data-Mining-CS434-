@@ -132,7 +132,13 @@ def main():
 ######################################################################
 
 def get_nearest_neighbors(example_set, query, k):
-    #TODO
+    print(example_set)
+    stored_distances = []
+    for point in example_set:
+        distance = np.linalg.norm(query - point)
+        stored_distances.append(distance)
+    print(stored_distances)
+    
     return idx_of_nearest  
 
 
