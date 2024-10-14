@@ -98,7 +98,7 @@ def main():
 
 
     # TODO set your best k value and then run on the test set
-    best_k = 10
+    best_k = 7
 
     # Make predictions on test set
     pred_test_y = predict(train_X, train_y, test_X, best_k)    
@@ -134,12 +134,9 @@ def main():
 ######################################################################
 
 def get_nearest_neighbors(example_set, query, k):
-    stored_distances = []
-    for point in example_set:
-        distance = np.linalg.norm(query - point)
-        stored_distances.append(distance)
-
-    idx_of_nearest = np.argsort(stored_distances)[:k]
+    # print("Getting nearest neighbor for", query)
+    distances = np.linalg.norm(example_set - query, axis=1)
+    idx_of_nearest = np.argsort(distances)[:k]
     return idx_of_nearest  
 
 
@@ -165,6 +162,7 @@ def get_nearest_neighbors(example_set, query, k):
 
 def knn_classify_point(examples_X, examples_y, query, k):
     nearest_neighbors = get_nearest_neighbors(examples_X, query, k)
+    # https://numpy.org/doc/2.0/reference/generated/numpy.ravel.html
     nearest_labels = examples_y[nearest_neighbors].ravel()  # Flatten numpy array
     label_counts = {}
     
@@ -202,16 +200,13 @@ def cross_validation(train_X, train_y, num_folds=4, k=1):
     accuracies = []
 
     for i in range(num_folds):
-        # Use the i-th fold as the test set
         test_X = train_X_folds[i]
         test_y = train_y_folds[i]
         
         # Combine the remaining folds to form the training set
         train_fold_X = np.vstack([fold for j, fold in enumerate(train_X_folds) if j != i])
         train_fold_y = np.hstack([fold for j, fold in enumerate(train_y_folds) if j != i])
-        
-        # Ensure train_fold_y is a 1D array (flatten it if necessary)
-        train_fold_y = train_fold_y.flatten()  # This ensures train_fold_y is 1D
+        train_fold_y = train_fold_y.flatten()
         
         # Debugging: Print shapes to ensure they are correct
         # print(f"Shape of train_fold_X: {train_fold_X.shape}")
@@ -219,21 +214,17 @@ def cross_validation(train_X, train_y, num_folds=4, k=1):
         # print(f"Shape of test_X: {test_X.shape}")
         # print(f"Shape of test_y: {test_y.shape}")
 
-        # Step 4: Make predictions on the test set and calculate accuracy
         correct_predictions = 0
         for query_point, true_label in zip(test_X, test_y):
-            # Use knn_classify_point or your predict function to predict labels
             predicted_label = knn_classify_point(train_fold_X, train_fold_y, query_point, k)
             # print(f"Predicted label: {predicted_label}, True label: {true_label}")
             if predicted_label == true_label:
                 correct_predictions += 1
 
-        # Calculate accuracy for the current fold
         accuracy = correct_predictions / len(test_y)
         print("Accuracy: ", accuracy)
         accuracies.append(accuracy)
 
-    # Step 5: Calculate the average and variance of the accuracies
     avg_accuracy = np.mean(accuracies)
     var_accuracy = np.var(accuracies)
     
