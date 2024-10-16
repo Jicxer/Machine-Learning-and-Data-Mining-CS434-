@@ -98,7 +98,7 @@ def main():
 
 
     # TODO set your best k value and then run on the test set
-    best_k = 7
+    best_k = 9
 
     # Make predictions on test set
     pred_test_y = predict(train_X, train_y, test_X, best_k)    
