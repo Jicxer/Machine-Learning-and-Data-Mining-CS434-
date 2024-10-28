@@ -8,7 +8,7 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S')
 
 # GLOBAL PARAMETERS FOR STOCHASTIC GRADIENT DESCENT
-step_size=0.0001
+step_size=0.00001
 max_iters=1000
 
 def main():
@@ -82,9 +82,13 @@ def main():
 def logistic(z):
   
   # https://numpy.org/doc/stable/reference/generated/numpy.zeros_like.html
+  # Checking for overflows with conditionals
   logit_z = np.zeros_like(z)
   for i, point in enumerate(z):
-    logit_z[i] = 1 / (1 + np.exp(-point))
+    if point >= 0:
+      logit_z[i] = 1 / (1 + np.exp(-point))
+    else:
+      logit_z[i] = np.exp(point) / (1 + np.exp(point))  
   return logit_z
 
 
@@ -110,7 +114,7 @@ def calculateNegativeLogLikelihood(X,y,w):
   
   z = np.dot(X,w)
   p = logistic(z)
-  nll = -np.sum(y * np.log(p) + (1 - y) * np.log(1 - p))
+  nll = -np.sum(y * np.log(p + 0.0000001) + (1 - y) * np.log(1 - p + 0.0000001))
   return nll
 
 
@@ -156,8 +160,10 @@ def trainLogistic(X,y, max_iters=max_iters, step_size=step_size):
         # .
         # . Implement equation 9.
         # .
-     
-        raise Exception('Student error: You haven\'t implemented the gradient calculation for trainLogistic yet.')
+        z = np.dot(X,w)
+        p = logistic(z)
+        w_grad = X.T @ (p - y)
+
 
         # This is here to make sure your gradient is the right shape
         assert(w_grad.shape == (X.shape[1],1))
@@ -189,8 +195,13 @@ def trainLogistic(X,y, max_iters=max_iters, step_size=step_size):
 #
 ######################################################################
 def dummyAugment(X):
-  raise Exception('Student error: You haven\'t implemented dummyAugment yet.')
-
+  
+  # Create a column of ones with the same number of rows as X
+  ones = np.ones((X.shape[0], 1))
+    
+  # Concatenate the column of ones to the left side of X
+  aug_X = np.hstack((ones, X))
+  return aug_X
 
 
 
