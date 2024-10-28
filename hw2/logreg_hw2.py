@@ -81,8 +81,10 @@ def main():
 ######################################################################
 def logistic(z):
   
-  for point in z:
-    logit_z[point] = 1 / (1 + np.exp(-point))
+  # https://numpy.org/doc/stable/reference/generated/numpy.zeros_like.html
+  logit_z = np.zeros_like(z)
+  for i, point in enumerate(z):
+    logit_z[i] = 1 / (1 + np.exp(-point))
   return logit_z
 
 
@@ -106,7 +108,9 @@ def logistic(z):
 ######################################################################
 def calculateNegativeLogLikelihood(X,y,w):
   
-  
+  z = np.dot(X,w)
+  p = logistic(z)
+  nll = -np.sum(y * np.log(p) + (1 - y) * np.log(1 - p))
   return nll
 
 
