@@ -80,7 +80,9 @@ def main():
 #               applying the logistic function to z[i]
 ######################################################################
 def logistic(z):
-  raise Exception('Student error: You haven\'t implemented the logistic calculation yet.')
+  
+  for point in z:
+    logit_z[point] = 1 / (1 + np.exp(-point))
   return logit_z
 
 
@@ -103,7 +105,8 @@ def logistic(z):
 #   nll --  the value of the negative log-likelihood
 ######################################################################
 def calculateNegativeLogLikelihood(X,y,w):
-  raise Exception('Student error: You haven\'t implemented the negative log likelihood calculation yet.')
+  
+  
   return nll
 
 
