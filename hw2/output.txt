@@ -1,0 +1,37 @@
+2024-10-30 01:21:52 INFO     Loading data
+2024-10-30 01:21:52 INFO     
+---------------------------------------------------------------------------
+
+2024-10-30 01:21:52 INFO     Training logistic regression model (No Bias Term)
+2024-10-30 01:22:05 INFO     Learned weight vector: [-2.0543, 11.3157, 0.7711, 4.5525, -8.6145, -3.7186, 6.418, -4.5375]
+2024-10-30 01:22:05 INFO     Train accuracy: 83.91%
+2024-10-30 01:22:05 INFO     
+---------------------------------------------------------------------------
+
+2024-10-30 01:22:05 INFO     Training logistic regression model (Added Bias Term)
+2024-10-30 01:22:17 INFO     Learned weight vector: [-38.6881, 2.8913, -0.1141, 2.3378, 2.3288, 0.921, 1.8876, 1.4968, 3.0904]
+2024-10-30 01:22:17 INFO     Train accuracy: 96.57%
+2024-10-30 01:26:20 INFO     
+---------------------------------------------------------------------------
+
+2024-10-30 01:26:20 INFO     Running cross-fold validation for bias case:
+2024-10-30 01:26:32 INFO     2-fold Cross Val Accuracy -- Mean (stdev): 95.71% (0.0%)
+2024-10-30 01:26:56 INFO     3-fold Cross Val Accuracy -- Mean (stdev): 93.76% (2.531%)
+2024-10-30 01:27:33 INFO     4-fold Cross Val Accuracy -- Mean (stdev): 96.36% (1.845%)
+2024-10-30 01:28:21 INFO     5-fold Cross Val Accuracy -- Mean (stdev): 93.97% (2.074%)
+2024-10-30 01:30:09 INFO     10-fold Cross Val Accuracy -- Mean (stdev): 95.9% (3.403%)
+2024-10-30 01:34:02 INFO     20-fold Cross Val Accuracy -- Mean (stdev): 94.17% (4.64%)
+2024-10-30 01:43:18 INFO     50-fold Cross Val Accuracy -- Mean (stdev): 95.53% (7.665%)
+({:.4f})		[exe_time = {:.2f}]
+({:.4f})		[exe_time = {:.2f}]
+({:.4f})		[exe_time = {:.2f}]
+({:.4f})		[exe_time = {:.2f}]
+({:.4f})		[exe_time = {:.2f}]
+({:.4f})		[exe_time = {:.2f}]
+({:.4f})		[exe_time = {:.2f}]
+Traceback (most recent call last):
+  File "/home/kali/code/Machine-Learning-and-Data-Mining-CS434-/hw2/logreg_hw2.py", line 267, in <module>
+    main()
+  File "/home/kali/code/Machine-Learning-and-Data-Mining-CS434-/hw2/logreg_hw2.py", line 65, in main
+    raise Exception("Raise Exception")
+Exception: Raise Exception

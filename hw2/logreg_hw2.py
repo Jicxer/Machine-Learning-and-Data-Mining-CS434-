@@ -8,8 +8,8 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S')
 
 # GLOBAL PARAMETERS FOR STOCHASTIC GRADIENT DESCENT
-step_size=0.00001
-max_iters=1000
+step_size=0.01
+max_iters=2000
 
 def main():
 
@@ -57,14 +57,26 @@ def main():
   for k in [2,3,4, 5, 10, 20, 50]:
     cv_acc, cv_std = kFoldCrossVal(X_train_bias, y_train, k)
     logging.info("{}-fold Cross Val Accuracy -- Mean (stdev): {:.4}% ({:.4}%)".format(k,cv_acc*100, cv_std*100))
+    print("({:.4f})\t\t[exe_time = {:.2f}]")
 
   ####################################################
   # Write the code to make your test submission here
   ####################################################
-
-  raise Exception('Student error: You haven\'t implemented the code in main() to make test predictions.')
-
-
+  X_test_bias = dummyAugment(X_test)
+    
+  # Predict probabilities on the test set
+  z_test = np.dot(X_test_bias, w)
+  p_test = logistic(z_test)
+    
+  # Convert probabilities to binary predictions
+  y_test_pred = (p_test >= 0.5).astype(int).reshape(-1, 1)  # Shape should be (2000, 1)
+  num_test_samples = y_test_pred.shape[0]
+  ids = np.expand_dims(np.array(range(num_test_samples), dtype=int), axis=1)
+  test_out = np.concatenate((ids, y_test_pred), axis=1)
+  header = np.array([["id", "type"]])
+  test_out = np.concatenate((header, test_out))
+  np.savetxt('test_cancer_submission.csv', test_out, fmt='%s', delimiter=',')
+  
 
 ######################################################################
 # Q3.1 logistic 
@@ -165,16 +177,13 @@ def trainLogistic(X,y, max_iters=max_iters, step_size=step_size):
         w_grad = X.T @ (p - y)
 
 
-        # This is here to make sure your gradient is the right shape
         assert(w_grad.shape == (X.shape[1],1))
 
         # Take the update step in gradient descent
         w = w - step_size*w_grad
         
-        # Calculate the negative log-likelihood with the 
-        # new weight vector and store it for plotting later
         losses.append(calculateNegativeLogLikelihood(X,y,w))
-        
+    
     return w, losses
 
 
@@ -196,10 +205,10 @@ def trainLogistic(X,y, max_iters=max_iters, step_size=step_size):
 ######################################################################
 def dummyAugment(X):
   
+
   # Create a column of ones with the same number of rows as X
   ones = np.ones((X.shape[0], 1))
     
-  # Concatenate the column of ones to the left side of X
   aug_X = np.hstack((ones, X))
   return aug_X
 
