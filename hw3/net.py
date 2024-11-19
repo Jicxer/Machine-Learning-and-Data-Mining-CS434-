@@ -15,17 +15,18 @@ matplotlib.rc('font', **font)
 # GLOBAL PARAMETERS FOR STOCHASTIC GRADIENT DESCENT
 np.random.seed(102)
 step_size = 0.01
-batch_size = 200
+batch_size = 64
 max_epochs = 200
 
 # GLOBAL PARAMETERS FOR NETWORK ARCHITECTURE
-number_of_layers = 2
-width_of_layers = 16  # only matters if number of layers > 1
-activation = "ReLU" if False else "Sigmoid" 
+number_of_layers = 7
+width_of_layers = 64  # only matters if number of layers > 1
+activation = "ReLU"
 
 def main():
 
   # Load data and display an example
+  
   X_train, Y_train, X_val, Y_val, X_test = loadData()
   displayExample(X_train[np.random.randint(0,len(X_train))])
 
@@ -121,8 +122,14 @@ def main():
   ################################
   # Q7 Evaluate on Test
   ################################
-  raise Exception('Student error: You haven\'t implemented evaluating the test set yet.')
-
+  logits_test = net.forward(X_test)
+  y_test_pred = np.argmax(logits_test, axis=1).reshape(-1, 1)
+  num_test_samples = y_test_pred.shape[0]
+  ids = np.expand_dims(np.arange(num_test_samples, dtype=int), axis=1)
+  test_out = np.concatenate((ids, y_test_pred), axis=1)
+  header = np.array([["id", "digit"]])
+  test_out = np.concatenate((header, test_out))
+  np.savetxt('submission_mnist_small_test.csv', test_out, fmt='%s', delimiter=',')
 
 
 class LinearLayer:
@@ -141,10 +148,10 @@ class LinearLayer:
   # Q3 Implementing Backward Pass for Linear
   #################################################
   def backward(self, grad):
-    raise Exception('Student error: You haven\'t implemented the backward pass for linear yet.')
-    self.grad_weights = #TODO1
-    self.grad_bias = #TODO2
-    return #TODO3
+    self.grad_weights = self.input.T @ grad
+    self.grad_bias = grad.sum(axis=0, keepdims=True)
+    grad_input = grad @ self.weights.T
+    return grad_input
     
   def step(self, step_size):
     self.weights -= step_size*self.grad_weights
