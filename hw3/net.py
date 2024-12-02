@@ -1,5 +1,4 @@
 import numpy as np
-
 import matplotlib.pyplot as plt
 import logging
 logging.basicConfig(
@@ -14,12 +13,12 @@ matplotlib.rc('font', **font)
 
 # GLOBAL PARAMETERS FOR STOCHASTIC GRADIENT DESCENT
 np.random.seed(102)
-step_size = 0.01
-batch_size = 64
-max_epochs = 200
+step_size = 0.055
+batch_size = 128
+max_epochs = 500
 
 # GLOBAL PARAMETERS FOR NETWORK ARCHITECTURE
-number_of_layers = 7
+number_of_layers = 5
 width_of_layers = 64  # only matters if number of layers > 1
 activation = "ReLU"
 
