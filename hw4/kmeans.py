@@ -37,9 +37,17 @@ def toyProblem():
   SSE_rand = []
   # Run the clustering with k=5 and max_iters=20 fifty times and 
   # store the final sum-of-squared-error for each run in the list SSE_rand.
-  raise Exception('Student error: You haven\'t implemented the randomness experiment for Q5.')
-  
+  for _ in range(50):
+    centroids = initalizeCentroids(X, k)
 
+    for _ in range(max_iters):
+      assignments = computeAssignments(X, centroids)
+      update_centroids, counts = updateCentroids(X, centroids, assignments)
+      if (np.allclose(centroids, update_centroids, atol=1e-6)):
+        break
+      centroids = updated_centroids
+    SSE_rand.append(calculateSSE(X, centroids, assignments))
+  
   # Plot error distribution
   plt.figure(figsize=(8,8))
   plt.hist(SSE_rand, bins=20)
@@ -52,9 +60,19 @@ def toyProblem():
   ########################
 
   SSE_vs_k = []
+  k_range = range(1, 151)
+  for k in k_range:
+    centroids = initalizeCentroids(X, k)
+    for _ in range(max_iters):
+      assignments = computeAssignments(X, centroids)
+      update_centroids, counts = updateCentroids(X, centroids, assignments)
+      if (np.allclose(centroids, update_centroids, atol=1e-6)):
+        break
+      centroids = updated_centroids
+    SSE_vs_k.append(calculateSSE(X, centroids, assignments))
+    
   # Run the clustering max_iters=20 for k in the range 1 to 150 and 
   # store the final sum-of-squared-error for each run in the list SSE_vs_k.
-  raise Exception('Student error: You haven\'t implemented the randomness experiment for Q5.')
 
   # Plot how SSE changes as k increases
   plt.figure(figsize=(16,8))
@@ -78,7 +96,7 @@ def imageProblem():
   # Visualize Clusters
   for c in range(len(centroids)):
     # Get images in this cluster
-    members = np.where(assignments==c)[0].astype(np.int)
+    members = np.where(assignments == c)[0].astype(int)
     imgs = data[np.random.choice(members,min(50, len(members)), replace=False),:,:]
     
     # Build plot with 50 samples
@@ -112,7 +130,11 @@ def imageProblem():
 ##########################################################
 
 def initalizeCentroids(dataset, k):
-  raise Exception('Student error: You haven\'t implemented initializeCentroids yet.')
+  # Given the dataset and a integer k produce k centroid vectors. We recommend
+  #doing this by selecting k random points from the dataset, but you are welcome to try alternatives.
+  
+  i = np.random.choice(len(dataset), k, replace=False)
+  centroids = dataset[i]
   return centroids
 
 ##########################################################
@@ -131,7 +153,13 @@ def initalizeCentroids(dataset, k):
 ##########################################################
 
 def computeAssignments(dataset, centroids):
-  raise Exception('Student error: You haven\'t implemented computeAssignments yet.')
+  
+  # Distance function adapted from HW1 kNN solution.
+  # Update assignments to be the index of the nearest centroid for each point in dataset
+  # Find the distance through pairwise distance calculation using np.linalg.norm. Ensures that broadcasting errors don't yell
+  distance = np.linalg.norm(dataset[:, np.newaxis] - centroids, axis=2)
+
+  assignments = np.argmin(distance, axis=1)
   return assignments
 
 ##########################################################
@@ -154,7 +182,20 @@ def computeAssignments(dataset, centroids):
 ##########################################################
 
 def updateCentroids(dataset, centroids, assignments):
-  raise Exception('Student error: You haven\'t implemented updateCentroids yet.')
+  # Update the centroids to be the mean of assigned points.
+  # Find the number of centroids and initialize the count vector
+  k = len(centroids)
+  counts = np.zeros(k)
+  
+  # For each centroid, find the points assigned to it
+  # Then count the number of points assigned to that centroid
+  for j in range(k):
+    points = dataset[assignments == j]
+    counts[j] = len(points)
+    if len(points) > 0:
+      update_centroid = np.mean(points, axis=0)
+      centroids[j] = update_centroid
+  
   return centroids, counts
   
 
@@ -174,7 +215,11 @@ def updateCentroids(dataset, centroids, assignments):
 ##########################################################
 
 def calculateSSE(dataset, centroids, assignments):
-  raise Exception('Student error: You haven\'t implemented calculateSSE yet.')
+  
+  sse = 0.0
+  for i in range(len(dataset)):
+    assign_centroid = centroids[assignments[i]]
+    sse += np.sum((dataset[i] - assign_centroid)**2)
   return sse
   
 
@@ -183,7 +228,7 @@ def calculateSSE(dataset, centroids, assignments):
 # beyond this point but should read it
 ########################################
 
-def kMeansClustering(dataset, k, max_iters=10, min_size=0, visualize=False):
+def kMeansClustering(dataset, k, max_iters=10, min_size=0, visualize=True):
   
   # Initialize centroids
   centroids = initalizeCentroids(dataset, k)

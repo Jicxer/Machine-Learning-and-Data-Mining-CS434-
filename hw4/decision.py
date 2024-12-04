@@ -35,12 +35,14 @@ for m in range(M):
   # MODIFY IN HERE TO DECREASE CORRELATION
   ###################################################
 
-  X_data = X_train
-  y_data = y_train
-
+  #  Bagging by sampling with replacement
+  #  At test time, simply run each model and take the average of their outputs.
+  i = np.random.choice(len(X_train), len(X_train), replace=True)
+  X_data = X_train[i]
+  y_data = y_train[i]
 
   #Fit the model and store it's predictions
-  clf = tree.DecisionTreeClassifier(criterion="entropy")
+  clf = tree.DecisionTreeClassifier(criterion="entropy", max_features = 3)
   clf = clf.fit(X_data, y_data)
   preds[:,m]= clf.predict(X_test)
 
