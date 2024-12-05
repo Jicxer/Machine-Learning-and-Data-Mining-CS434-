@@ -90,9 +90,8 @@ def imageProblem():
 
 
   # Perform k-means clustering
-  k=10
+  k=3
   centroids, assignments, SSE = kMeansClustering(img_feats, k, 30, min_size=0)
-
   # Visualize Clusters
   for c in range(len(centroids)):
     # Get images in this cluster
